@@ -14,7 +14,11 @@ namespace cutFruits
 
         void Start()
         {
+            // 加载主界面;
             mGo_UIMain.AddComponent<UIMain>();
+          
         }
+
+      
     }
 }

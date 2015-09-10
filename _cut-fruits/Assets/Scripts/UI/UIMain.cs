@@ -16,11 +16,17 @@ namespace cutFruits
         private readonly string mGo_Head_Path = "TLAnchor/parent";
 
         // 道场;
+        private GameObject mGO_DC_parent;
         private GameObject mGO_DC;
+
         // 新游戏;
+        private GameObject mGo_Game_parent;
         private GameObject mGo_Game;
+
         // 退出;
+        private GameObject mGo_Quit_parent;
         private GameObject mGo_Quit;
+
         // 头部背景;
         private GameObject mGo_Head;
         private GameObject mGo_Head_Word2;
@@ -31,14 +37,23 @@ namespace cutFruits
         private bool _Start = false;
         void Awake()
         {
-            mGO_DC = gameObject.transform.FindChild(mGo_DC_Path).gameObject;
-            mGo_Game = gameObject.transform.FindChild(mGo_Game_Path).gameObject;
-            mGo_Quit = gameObject.transform.FindChild(mGo_Quit_Path).gameObject;
+            mGO_DC_parent = gameObject.transform.FindChild(mGo_DC_Path).gameObject;
+            mGo_Game_parent = gameObject.transform.FindChild(mGo_Game_Path).gameObject;
+            mGo_Quit_parent = gameObject.transform.FindChild(mGo_Quit_Path).gameObject;
             mGo_Head = gameObject.transform.FindChild(mGo_Head_Path).gameObject;
 
         }
 
         void Start()
+        {
+            // 添加一个手滑事件;
+            EasyTouch.On_Swipe += EasyTouch_On_Swipe;
+            onEnterUI();
+          
+        }
+
+        // 进入游戏UI界面;
+        void onEnterUI()
         {
             setDC();
             setNewGame();
@@ -46,44 +61,66 @@ namespace cutFruits
             setHead();
         }
 
+        // 进入游戏场景;
+        void onEnterScence()
+        {
+            setDC2();
+
+            // 设置水果从下面弹上来;
+            OneFruit fruit = Framework.loadFruit(gameObject ,fruitType.peach, new Vector3(0f, -400f));
+            Rigidbody body = Framework.AddOneComponent<Rigidbody>(fruit.gameObject);
+            body.useGravity = true;
+            body.AddForce(new Vector3(10f, 300f, 0f));
+        }
+
         void setDC()
         {
             // 道场的外环旋转(顺时针,right);
-            GameObject go = mGO_DC.transform.FindChild("ring").gameObject;
+            GameObject go = mGO_DC_parent.transform.FindChild("ring").gameObject;
             Framework.SetRotate(go, 10f, false);
             Framework.SetScale(go);           
 
             // 道场的水果旋转(顺时针,right);
-            go = mGO_DC.transform.FindChild("fruit").gameObject;
-            Framework.SetRotate(go, 5f, false);
-            Framework.SetScale(go);
-   
+            Vector3 vec = mGO_DC_parent.transform.FindChild("fruitparent").localPosition;
+            mGO_DC = Framework.CreateFruit(mGO_DC_parent, fruitType.peach, vec);
+            Framework.AddOnClick(mGO_DC, "", OnDC);
+            Framework.SetRotate(mGO_DC.transform.parent.gameObject, 5f, false);
+            Framework.SetScale(mGO_DC.transform.parent.gameObject);          
+        }
+
+        void setDC2()
+        {
+            Framework.SetUpDown2(mGO_DC_parent,800f,false);
+
         }
 
         void setNewGame()
         {
             // 游戏的外环顺时针旋转;
-            GameObject go = mGo_Game.transform.FindChild("ring").gameObject;
+            GameObject go = mGo_Game_parent.transform.FindChild("ring").gameObject;
             Framework.SetRotate(go,10f,false);
             Framework.SetScale(go);
 
             // 游戏的水果逆时针旋转;
-            go = mGo_Game.transform.FindChild("fruit").gameObject;
-            Framework.SetRotate(go, 5f, true);
-            Framework.SetScale(go);
-
+            Vector3 vec = mGo_Game_parent.transform.FindChild("fruitparent").localPosition;
+            mGo_Game = Framework.CreateFruit(mGo_Game_parent, fruitType.sandia, vec);
+            Framework.AddOnClick(mGo_Game, "", OnGame);
+            Framework.SetRotate(mGo_Game.transform.parent.gameObject, 5f, true);
+            Framework.SetScale(mGo_Game.transform.parent.gameObject);
         }
 
         void setQuit()
         {
             // 游戏的外环顺时针旋转;
-            GameObject go = mGo_Quit.transform.FindChild("ring").gameObject;
+            GameObject go = mGo_Quit_parent.transform.FindChild("fruitparent/ring").gameObject;
             Framework.SetRotate(go, 10f, true);
             Framework.SetScale(go);
 
             // 游戏的水果逆时针旋转;
-            go = mGo_Game.transform.FindChild("fruit").gameObject;
-         
+            Vector3 vec = mGo_Quit_parent.transform.FindChild("fruitparent").localPosition;
+            mGo_Quit = Framework.CreateFruit(mGo_Quit_parent, fruitType.boom, vec);
+            Framework.AddOnClick(mGo_Quit, "", OnQuit);
+
 
         }
 
@@ -107,5 +144,69 @@ namespace cutFruits
             mGo_Head_Word2.SetActive(true);
         }
      
+        void OnDC(object obj)
+        {
+            // 点击道场的回调;
+            
+        }
+
+        void OnGame(object obj)
+        {
+            // 点击game的回调;
+            onEnterScence();
+        }
+
+        void OnQuit(object obj)
+        {
+            // 点击quit的回调;
+
+        }
+
+        void OnDestroy()
+        {
+            // 释放一个手滑事件;
+            EasyTouch.On_Swipe -= EasyTouch_On_Swipe;
+        }
+
+        // 手指滑动;
+        void EasyTouch_On_Swipe(Gesture gesture)
+        {
+            // 检测道场;
+            if (gesture.IsInRect(NGUIObjectToRect(mGO_DC)))
+            {
+                OneFruit fuit = mGO_DC.GetComponentInParent<OneFruit>();
+                fuit.onClick(null);
+                OnDC(null);
+                //Debug.Log(gesture.swipe);
+            }
+
+            // 检测游戏;
+            if (gesture.IsInRect(NGUIObjectToRect(mGo_Game)))
+            {
+                OneFruit fuit = mGo_Game.GetComponentInParent<OneFruit>();
+                fuit.onClick(null);
+                OnGame(null);
+                //Debug.Log(gesture.swipe);
+            }
+
+            // 检测退出;
+            if (gesture.IsInRect(NGUIObjectToRect(mGo_Quit)))
+            {
+                OneFruit fuit = mGo_Quit.GetComponentInParent<OneFruit>();
+                fuit.onClick(null);
+                OnQuit(null);
+                //Debug.Log(gesture.swipe);
+            }
+        }
+
+        //计算出NGUI某个UISprite或者UITexture或者 UILabel 在屏幕中占的矩形位置;
+        private Rect NGUIObjectToRect(GameObject go)
+        {
+            Camera camera = NGUITools.FindCameraForLayer(go.layer);
+            Bounds bounds = NGUIMath.CalculateAbsoluteWidgetBounds(go.transform);
+            Vector3 min = camera.WorldToScreenPoint(bounds.min);
+            Vector3 max = camera.WorldToScreenPoint(bounds.max);
+            return new Rect(min.x, min.y, max.x - min.x, max.y - min.y);
+        }
     }
 }

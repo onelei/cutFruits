@@ -2,7 +2,7 @@
 
 namespace cutFruits
 {
-    public class Framework
+    public class Framework :MonoBehaviour
     {
         public static T AddOneComponent<T>(GameObject obj) where T : Component
         {
@@ -12,6 +12,35 @@ namespace cutFruits
                 tempObject = obj.AddComponent<T>();
             }
             return tempObject;
+        }
+
+        // 按钮的OnClick事件;
+        public static GameObject AddOnClick(GameObject parent, string path, UIEventListener.VoidDelegate OnCallBack)
+        {
+            GameObject btnObj = null;
+            if (path == "")
+            {
+                btnObj = parent;
+            }
+            else
+            {
+                btnObj = parent.transform.FindChild(path).gameObject;
+            }
+            if (btnObj != null)
+            {
+                // 添加回调;
+                UIEventListener.Get(btnObj).onClick += OnCallBack;
+                // 设置碰撞;
+                UISprite sp = btnObj.GetComponent<UISprite>();
+                BoxCollider bc = AddOneComponent<BoxCollider>(btnObj);
+                bc.size = new Vector3(sp.localSize.x, sp.localSize.y, 0f);
+                bc.center = new Vector3(sp.localSize.x * (0.5f - sp.pivotOffset.x), sp.localSize.y * (0.5f - sp.pivotOffset.y), 0f);
+            }
+            else
+            {
+                Debug.LogError("the GameObject in " + path + " is not fond!");
+            }
+            return btnObj;
         }
 
         public static void SetRotate(GameObject go,float time,bool isLeftRotate)
@@ -55,7 +84,22 @@ namespace cutFruits
             tp.style = UITweener.Style.Once;
             tp.duration = 1f;
         }
-
+        public static void SetUpDown2(GameObject go, float dis, bool isUp)
+        {
+            TweenPosition tp = AddOneComponent<TweenPosition>(go);
+            Vector3 vec = go.transform.localPosition;
+            if (isUp)
+            {
+                tp.to = new Vector3(vec.x, vec.y + dis, vec.z);
+            }
+            else
+            {
+                tp.to = new Vector3(vec.x, vec.y - dis, vec.z);
+            }
+            tp.from = vec;
+            tp.style = UITweener.Style.Once;
+            tp.duration = 1f;
+        }
 
         public static void SetLeftRight(GameObject go, float dis, float time,bool isLeft)
         {
@@ -73,6 +117,106 @@ namespace cutFruits
             tp.to = vec;
             tp.style = UITweener.Style.Once;
             tp.duration = time;
+        }
+
+        public static GameObject CreateFruit(GameObject parent,fruitType type ,Vector3 vec)
+        {
+            GameObject obj = Instantiate(Resources.Load(UIPrafabs.oneFruit)) as GameObject;       
+            obj.transform.parent = parent.transform;
+            obj.transform.localScale = Vector3.one;
+            obj.transform.localPosition = vec;
+            OneFruit fruit = AddOneComponent<OneFruit>(obj);
+            fruit.init(type);
+            return fruit.getOne();
+        }
+
+        public static OneFruit loadFruit(GameObject parent,fruitType type, Vector3 vec)
+        {
+            GameObject obj = Instantiate(Resources.Load(UIPrafabs.oneFruit)) as GameObject;
+            obj.transform.parent = parent.transform;
+            obj.transform.localScale = Vector3.one;
+            obj.transform.localPosition = vec;
+            OneFruit fruit = AddOneComponent<OneFruit>(obj);
+            fruit.init(type);
+            return fruit;
+        }
+
+        public static string getNameByType(fruitType type)
+        {
+            string fruitName = "";
+            switch (type)
+            {
+                case fruitType.apple:
+                    {
+                        fruitName = "apple";
+                    }
+                    break;
+                case fruitType.banana:
+                    {
+                        fruitName = "banana";
+                    }
+                    break;
+                case fruitType.basaha:
+                    {
+                        fruitName = "basaha";
+                    }
+                    break;
+                case fruitType.boom:
+                    {
+                        fruitName = "boom";
+                    }
+                    break;
+                case fruitType.peach:
+                    {
+                        fruitName = "peach";
+                    }
+                    break;
+                case fruitType.sandia:
+                    {
+                        fruitName = "sandia";
+                    }
+                    break;
+            }
+            return fruitName;
+        }
+
+        public static Vector2 getSizeByType(fruitType type)
+        {
+            Vector2 vec = Vector2.one;
+            switch (type)
+            {
+                case fruitType.apple:
+                    {
+                        vec = new Vector2(66f,66f);
+                    }
+                    break;
+                case fruitType.banana:
+                    {
+                        vec = new Vector2(126f, 50f);
+                    }
+                    break;
+                case fruitType.basaha:
+                    {
+                        vec = new Vector2(68f, 72f);
+                    }
+                    break;
+                case fruitType.boom:
+                    {
+                        vec = new Vector2(66f, 68f);
+                    }
+                    break;
+                case fruitType.peach:
+                    {
+                        vec = new Vector2(62f, 59f);
+                    }
+                    break;
+                case fruitType.sandia:
+                    {
+                        vec = new Vector2(98f, 85f);
+                    }
+                    break;
+            }
+            return vec;
         }
     }
 }
