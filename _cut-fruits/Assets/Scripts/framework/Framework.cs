@@ -118,7 +118,23 @@ namespace cutFruits
             tp.style = UITweener.Style.Once;
             tp.duration = time;
         }
-
+        public static void SetLeftRight2(GameObject go, float dis,bool isLeft)
+        {      
+            TweenPosition tp = go.AddComponent<TweenPosition>();
+            Vector3 vec = go.transform.localPosition;
+            // 向左边移动;
+            if (isLeft)
+            {
+                tp.to = new Vector3(vec.x - dis, vec.y, vec.z);
+            }
+            else
+            {
+                tp.to = new Vector3(vec.x + dis, vec.y + dis, vec.z);
+            }
+            tp.from = vec;
+            tp.style = UITweener.Style.Once;
+            tp.duration = 1f;
+        }
         public static GameObject CreateFruit(GameObject parent,fruitType type ,Vector3 vec)
         {
             GameObject obj = Instantiate(Resources.Load(UIPrafabs.oneFruit)) as GameObject;       
@@ -180,6 +196,10 @@ namespace cutFruits
             return fruitName;
         }
 
+        public static fruitType getTypeByID(int id)
+        {
+            return (fruitType)id;         
+        }
         public static Vector2 getSizeByType(fruitType type)
         {
             Vector2 vec = Vector2.one;

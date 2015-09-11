@@ -29,7 +29,7 @@ namespace cutFruits
             // 设置切开的水果;
             // left;
             GameObject left = mGo_Two.transform.FindChild("left").gameObject;
-            leftBody = left.AddComponent<Rigidbody>();
+            leftBody = Framework.AddOneComponent<Rigidbody>(left); 
             leftBody.useGravity = false;
             UISprite sp = left.GetComponent<UISprite>();
             sp.spriteName = fruitName + "-1";
@@ -37,7 +37,7 @@ namespace cutFruits
             sp.width = (int)size.x;
             // right;
             left = mGo_Two.transform.FindChild("right").gameObject;
-            rightBody = left.AddComponent<Rigidbody>();
+            rightBody = Framework.AddOneComponent<Rigidbody>(left); 
             rightBody.useGravity = false;
             sp = left.GetComponent<UISprite>();
             sp.spriteName = fruitName + "-2";
@@ -69,28 +69,6 @@ namespace cutFruits
             rightBody.AddForce(new Vector3(-60f, 0f, 0f));
         }
 
-        //void Update()
-        //{
-        //    if (isStartCheck)
-        //    {
-        //        bool tmp1 = false;
-        //        bool tmp2 = false;
-        //        if (leftBody.gameObject.transform.localPosition.y <= -500f)
-        //        {
-        //            leftBody.gameObject.SetActive(false);
-        //            tmp1 = true;
-        //        }
-        //        if (rightBody.gameObject.transform.localPosition.y <= -500f)
-        //        {
-        //            rightBody.gameObject.SetActive(false);
-        //            tmp2 = true;
-        //        } 
-        //        if(tmp1&&tmp2)
-        //        {
-        //            isStartCheck = false;
-        //        }
-        //    }
-         
-        //}
+       
     }
 }
