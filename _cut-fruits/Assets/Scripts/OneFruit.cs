@@ -3,6 +3,7 @@
  * 水果上面都要帮这个脚本;
  */
 using UnityEngine;
+using System.Collections;
 namespace cutFruits
 {
     public class  OneFruit:MonoBehaviour
@@ -14,6 +15,8 @@ namespace cutFruits
         GameObject mGo_Two;
         Rigidbody leftBody;
         Rigidbody rightBody;
+        bool startCheck = false;
+        bool startReset = false;
         void findUI()
         {
             mGo_Two = transform.FindChild(mGo_Two_Path).gameObject;
@@ -67,8 +70,34 @@ namespace cutFruits
 
             leftBody.AddForce(new Vector3(60f,0f,0f));
             rightBody.AddForce(new Vector3(-60f, 0f, 0f));
+
+            if (startCheck)
+            {
+                StartCoroutine(startCheck2());
+            }
         }
 
+        public void StartCheck(bool check)
+        {
+            startCheck = check;
+        }
+
+        IEnumerator startCheck2()
+        {
+            yield return new WaitForSeconds(1f);
+            reset();
+        }
+
+        void reset()
+        {       
+            leftBody.useGravity = false;
+            rightBody.useGravity = false;
+            leftBody.transform.localPosition = Vector3.zero;
+            rightBody.transform.localPosition = Vector3.zero;
+            gameObject.transform.localPosition = new Vector3(0f, -500f);
+            mGo_One.SetActive(true);
+            mGo_Two.SetActive(false);
+        }
        
     }
 }

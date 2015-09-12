@@ -105,14 +105,16 @@ namespace cutFruits
                 int randForceX = Random.Range(5,15);
                 int randForceY = Random.Range(250,350);
                 body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
+                fruit.StartCheck(true);
             }      
         }
 
         void setUp(OneFruit fruit)
         {
+            fruit.transform.localPosition = new Vector3(0f,-400f);
             Rigidbody body = fruit.gameObject.GetComponent<Rigidbody>();
-            int randForceX = 0;
-            int randForceY = Random.Range(250, 350);
+            int randForceX = Random.Range(-5, 5); 
+            int randForceY = Random.Range(300, 350);
             body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
             int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
             fruitType type = Framework.getTypeByID(rand);
@@ -214,6 +216,8 @@ namespace cutFruits
         {
             // 点击game的回调;
             onEnterScence();
+            OneFruit fruit = mGo_Game.GetComponentInParent<OneFruit>();
+            fruit.StartCheck(false);
         }
 
         void OnQuit(object obj)
