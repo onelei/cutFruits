@@ -20,8 +20,8 @@ namespace cutFruits
 
     public class GameData
     {
-        public static float mMaxBottomY = -600f;
-        public static int mMaxUpForceY = 370;
-        public static int mMinUpForceY = 340;
+        public static float mMaxBottomY = -1000f;
+        public static int mMaxUpForceY = 410;
+        public static int mMinUpForceY = 430;
     }
 }
