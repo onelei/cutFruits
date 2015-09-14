@@ -111,12 +111,14 @@ namespace cutFruits
         void setUp(OneFruit fruit)
         {
             Rigidbody body = fruit.gameObject.GetComponent<Rigidbody>();
+            body.useGravity = false;
             int randForceX = 0;
             int randForceY = Random.Range(250, 350);
             body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
             int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
             fruitType type = Framework.getTypeByID(rand);
             fruit.init(type);
+            body.useGravity = true;
         }
 
         void setDC()
