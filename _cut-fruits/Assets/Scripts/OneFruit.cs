@@ -16,8 +16,7 @@ namespace cutFruits
         Rigidbody leftBody;
         Rigidbody rightBody;
         bool startCheck = false;
-        bool startReset = false;
-        void findUI()
+         void findUI()
         {
             mGo_Two = transform.FindChild(mGo_Two_Path).gameObject;
             mGo_Two.SetActive(true);
@@ -94,7 +93,7 @@ namespace cutFruits
             rightBody.useGravity = false;
             leftBody.transform.localPosition = Vector3.zero;
             rightBody.transform.localPosition = Vector3.zero;
-            gameObject.transform.localPosition = new Vector3(0f, -500f);
+            gameObject.transform.localPosition = new Vector3(0f, GameData.mMaxBottomY);
             mGo_One.SetActive(true);
             mGo_Two.SetActive(false);
         }

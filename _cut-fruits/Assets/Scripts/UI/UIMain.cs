@@ -98,12 +98,12 @@ namespace cutFruits
                 // 设置水果从下面弹上来;
                 int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
                 fruitType type = Framework.getTypeByID(rand);
-                OneFruit fruit = Framework.loadFruit(gameObject, type, new Vector3(0f, -400f));//-400
+                OneFruit fruit = Framework.loadFruit(gameObject, type, new Vector3(0f, GameData.mMaxBottomY));//-400
                 MainModel.Instance.AddFruits(fruit);
                 Rigidbody body = Framework.AddOneComponent<Rigidbody>(fruit.gameObject);
                 body.useGravity = true;
                 int randForceX = Random.Range(5,15);
-                int randForceY = Random.Range(250,350);
+                int randForceY = Random.Range(GameData.mMinUpForceY,GameData.mMaxUpForceY);
                 body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
                 fruit.StartCheck(true);
             }      
@@ -111,10 +111,10 @@ namespace cutFruits
 
         void setUp(OneFruit fruit)
         {
-            fruit.transform.localPosition = new Vector3(0f,-400f);
+            fruit.transform.localPosition = new Vector3(0f,GameData.mMaxBottomY);
             Rigidbody body = fruit.gameObject.GetComponent<Rigidbody>();
-            int randForceX = Random.Range(-5, 5); 
-            int randForceY = Random.Range(300, 350);
+            int randForceX = Random.Range(-5, 5);
+            int randForceY = Random.Range(GameData.mMinUpForceY, GameData.mMaxUpForceY);
             body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
             int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
             fruitType type = Framework.getTypeByID(rand);
@@ -284,7 +284,7 @@ namespace cutFruits
             List<OneFruit> mFruitsList = MainModel.Instance.mFruitsList;
             for (int i = 0; i < mFruitsList.Count;++i)
             {
-                if (mFruitsList[i].transform.localPosition.y<-400)
+                if (mFruitsList[i].transform.localPosition.y < GameData.mMaxBottomY)
                 {
                     setUp(mFruitsList[i]);
                 }
