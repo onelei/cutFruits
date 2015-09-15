@@ -11,6 +11,19 @@ namespace cutFruits
 {
     public class UIMain:MonoBehaviour
     {
+        private static UIMain _instance = null;
+        public static UIMain Instance
+        {
+            get
+            {
+                if(_instance==null)
+                {
+                    _instance = new UIMain();
+                }
+                return _instance;
+            }
+        }
+
         private readonly string mGo_DC_Path = "BLAnchor/parent/dojo";
         private readonly string mGo_Game_Path = "BAnchor/parent";
         private readonly string mGo_Quit_Path = "BRAnchor/parent";
@@ -85,7 +98,7 @@ namespace cutFruits
         {
             yield return new WaitForSeconds(2f);
             // 设置水果从下面弹上来;
-            addJumpFruits(2);
+            addJumpFruits(1);
             // 如果水果跌落,则重新上来两个水果;
 
         }
@@ -98,27 +111,28 @@ namespace cutFruits
                 // 设置水果从下面弹上来;
                 int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
                 fruitType type = Framework.getTypeByID(rand);
-                OneFruit fruit = Framework.loadFruit(gameObject, type, new Vector3(0f, GameData.mMaxBottomY));//-400
-                MainModel.Instance.AddFruits(fruit);
-                Rigidbody body = Framework.AddOneComponent<Rigidbody>(fruit.gameObject);
-                body.useGravity = true;
+                GameObject go = Framework.loadFruit(gameObject, type, new Vector3(0f, GameData.mMaxBottomY));//-400
+                FruitItemOne itemOne = go.GetComponent<FruitItemOne>();
+                MainModel.Instance.AddFruitsOne(itemOne);
+                Rigidbody body = Framework.AddOneComponent<Rigidbody>(go);
                 int randForceX = Random.Range(5,15);
                 int randForceY = Random.Range(GameData.mMinUpForceY,GameData.mMaxUpForceY);
                 body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
-                fruit.StartCheck(true);
+                body.isKinematic = false;
             }      
         }
 
-        void setUp(OneFruit fruit)
+        public void setUp(FruitItemOne fruit)
         {
             fruit.transform.localPosition = new Vector3(0f,GameData.mMaxBottomY);
-            Rigidbody body = fruit.gameObject.GetComponent<Rigidbody>();
+            Rigidbody body = fruit.GetComponent<Rigidbody>();
             int randForceX = Random.Range(-5, 5);
             int randForceY = Random.Range(GameData.mMinUpForceY, GameData.mMaxUpForceY);
             body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
             int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
             fruitType type = Framework.getTypeByID(rand);
             fruit.init(type);
+            body.isKinematic = false;
         }
 
         void setDC()
@@ -132,7 +146,7 @@ namespace cutFruits
             // 道场的水果旋转(顺时针,right);
             Vector3 vec = mGO_DC_parent.transform.FindChild("fruitparent").localPosition;
             mGO_DC = Framework.CreateFruit(mGO_DC_parent, fruitType.peach, vec);
-            OneFruit fuit = mGO_DC.GetComponentInParent<OneFruit>();
+            FruitItem fuit = mGO_DC.GetComponentInParent<FruitItem>();
             Framework.AddOnClick(mGO_DC, "", OnDC);
             Framework.SetRotate(mGO_DC.transform.parent.gameObject, 5f, false);
             Framework.SetScale(mGO_DC.transform.parent.gameObject);          
@@ -166,7 +180,7 @@ namespace cutFruits
             // 游戏的水果逆时针旋转;
             Vector3 vec = mGo_Game_parent.transform.FindChild("fruitparent").localPosition;
             mGo_Game = Framework.CreateFruit(mGo_Game_parent, fruitType.sandia, vec);
-            OneFruit fuit = mGo_Game.GetComponentInParent<OneFruit>();
+            FruitItem fuit = mGo_Game.GetComponentInParent<FruitItem>();
             Framework.AddOnClick(mGo_Game, "", OnGame);
             Framework.SetRotate(mGo_Game.transform.parent.gameObject, 5f, true);
             Framework.SetScale(mGo_Game.transform.parent.gameObject);
@@ -182,7 +196,7 @@ namespace cutFruits
             // 游戏的水果逆时针旋转;
             Vector3 vec = mGo_Quit_parent.transform.FindChild("fruitparent").localPosition;
             mGo_Quit = Framework.CreateFruit(mGo_Quit_parent, fruitType.boom, vec);
-            OneFruit fuit = mGo_Quit.GetComponentInParent<OneFruit>();
+            FruitItem fuit = mGo_Quit.GetComponentInParent<FruitItem>();
             Framework.AddOnClick(mGo_Quit, "", OnQuit);
 
         }
@@ -216,8 +230,6 @@ namespace cutFruits
         {
             // 点击game的回调;
             onEnterScence();
-            OneFruit fruit = mGo_Game.GetComponentInParent<OneFruit>();
-            fruit.StartCheck(false);
         }
 
         void OnQuit(object obj)
@@ -235,11 +247,12 @@ namespace cutFruits
         // 手指滑动;
         void EasyTouch_On_Swipe(Gesture gesture)
         {
-            List<OneFruit> mFruitsList = MainModel.Instance.mFruitsList;
+            List<FruitItemOne> mFruitsList = MainModel.Instance.mFruitsOneList;
             for (int i = 0; i < mFruitsList.Count;++i )
             {
                 if (gesture.IsInRect(NGUIObjectToRect(mFruitsList[i].gameObject)))
                 {
+                    // 用于水果的切;
                     mFruitsList[i].onClick(null);               
                 }
             }
@@ -247,24 +260,24 @@ namespace cutFruits
             // 检测道场;
             if (gesture.IsInRect(NGUIObjectToRect(mGO_DC)))
             {
-                OneFruit fuit = mGO_DC.GetComponentInParent<OneFruit>();
-                fuit.onClick(null);
+                FruitItem fuit = mGO_DC.GetComponentInParent<FruitItem>();
+                fuit.doAction(false);
                 OnDC(null);
             }
 
             // 检测游戏;
             if (gesture.IsInRect(NGUIObjectToRect(mGo_Game)))
             {
-                OneFruit fuit = mGo_Game.GetComponentInParent<OneFruit>();
-                fuit.onClick(null);
+                FruitItem fuit = mGo_Game.GetComponentInParent<FruitItem>();
+                fuit.doAction(false);
                 OnGame(null);
             }
 
             // 检测退出;
             if (gesture.IsInRect(NGUIObjectToRect(mGo_Quit)))
             {
-                OneFruit fuit = mGo_Quit.GetComponentInParent<OneFruit>();
-                fuit.onClick(null);
+                FruitItem fuit = mGo_Quit.GetComponentInParent<FruitItem>();
+                fuit.doAction(false);
                 OnQuit(null);
             }
         }
@@ -281,7 +294,7 @@ namespace cutFruits
  
         void Update()
         {
-            List<OneFruit> mFruitsList = MainModel.Instance.mFruitsList;
+            List<FruitItemOne> mFruitsList = MainModel.Instance.mFruitsOneList;
             for (int i = 0; i < mFruitsList.Count;++i)
             {
                 if (mFruitsList[i].transform.localPosition.y < GameData.mMaxBottomY)

@@ -18,15 +18,16 @@ namespace cutFruits
             }
         }
 
-        public List<OneFruit> mFruitsList;
+        public List<FruitItemOne> mFruitsOneList;
+
         public MainModel()
         {
-            mFruitsList = new List<OneFruit>();
+            mFruitsOneList = new List<FruitItemOne>();
         }
 
-        public void AddFruits(OneFruit fruit)
+        public void AddFruitsOne(FruitItemOne item)
         {
-            mFruitsList.Add(fruit);
+            mFruitsOneList.Add(item);
         }
     }
 }

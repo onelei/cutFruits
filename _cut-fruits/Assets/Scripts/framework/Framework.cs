@@ -141,20 +141,21 @@ namespace cutFruits
             obj.transform.parent = parent.transform;
             obj.transform.localScale = Vector3.one;
             obj.transform.localPosition = vec;
-            OneFruit fruit = AddOneComponent<OneFruit>(obj);
+            FruitItem fruit = AddOneComponent<FruitItem>(obj);
             fruit.init(type);
             return fruit.getOne();
         }
 
-        public static OneFruit loadFruit(GameObject parent,fruitType type, Vector3 vec)
+        public static GameObject loadFruit(GameObject parent, fruitType type, Vector3 vec)
         {
-            GameObject obj = Instantiate(Resources.Load(UIPrafabs.oneFruit)) as GameObject;
-            obj.transform.parent = parent.transform;
-            obj.transform.localScale = Vector3.one;
-            obj.transform.localPosition = vec;
-            OneFruit fruit = AddOneComponent<OneFruit>(obj);
+            GameObject go = Instantiate(Resources.Load(UIPrafabs.oneFruit)) as GameObject;
+            go.transform.parent = parent.transform;
+            go.transform.localScale = Vector3.one;
+            go.transform.localPosition = Vector3.zero;
+            FruitItem fruit = AddOneComponent<FruitItem>(go);
             fruit.init(type);
-            return fruit;
+            fruit.setPos(vec);
+            return fruit.getOne();
         }
 
         public static string getNameByType(fruitType type)
