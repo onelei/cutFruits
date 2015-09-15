@@ -53,8 +53,10 @@ namespace cutFruits
             this.isNeedUp = isNeedUp;
             leftBody.isKinematic = false;
             rightBody.isKinematic = false;
-            leftBody.AddForce(new Vector3(60f,0f,0f));
-            rightBody.AddForce(new Vector3(-60f, 0f, 0f));
+            leftBody.velocity = Vector3.zero;
+            rightBody.velocity = Vector3.zero;
+            leftBody.AddForce(new Vector3(100f,-100f,0f));
+            rightBody.AddForce(new Vector3(-100f, -100f, 0f));
 
             startCheck = true;
         }

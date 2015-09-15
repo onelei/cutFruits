@@ -98,7 +98,7 @@ namespace cutFruits
         {
             yield return new WaitForSeconds(2f);
             // 设置水果从下面弹上来;
-            addJumpFruits(1);
+            addJumpFruits(3);
             // 如果水果跌落,则重新上来两个水果;
 
         }
@@ -111,13 +111,13 @@ namespace cutFruits
                 // 设置水果从下面弹上来;
                 int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
                 fruitType type = Framework.getTypeByID(rand);
-                GameObject go = Framework.loadFruit(gameObject, type, new Vector3(0f, GameData.mMaxBottomY));//-400
+                GameObject go = Framework.loadFruit(gameObject, type, new Vector3(0f, GameData.mMaxBottomY));
                 FruitItemOne itemOne = go.GetComponent<FruitItemOne>();
                 MainModel.Instance.AddFruitsOne(itemOne);
                 Rigidbody body = Framework.AddOneComponent<Rigidbody>(go);
-                int randForceX = Random.Range(5,15);
-                int randForceY = Random.Range(GameData.mMinUpForceY,GameData.mMaxUpForceY);
-                body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
+                int randForceX = Random.Range(GameData.mMinUpForceX, GameData.mMaxUpForceX);
+                int randForceY = Random.Range(GameData.mMinUpForceY, GameData.mMaxUpForceY);
+                body.AddForce(new Vector3(randForceX, randForceY, 0f));
                 body.isKinematic = false;
             }      
         }
@@ -127,12 +127,13 @@ namespace cutFruits
             fruit.transform.localPosition = new Vector3(0f,GameData.mMaxBottomY);
             Rigidbody body = fruit.GetComponent<Rigidbody>();
             body.velocity = Vector3.zero;
-            int randForceX = Random.Range(-5, 5);
+            int randForceX = Random.Range(GameData.mMinUpForceX, GameData.mMaxUpForceX);
             int randForceY = Random.Range(GameData.mMinUpForceY, GameData.mMaxUpForceY);
-            body.AddForce(new Vector3(randForceX, randForceY, 0f));//300
+            body.AddForce(new Vector3(randForceX, randForceY, 0f));
             int rand = Random.Range((int)fruitType.apple, (int)fruitType.sandia);
             fruitType type = Framework.getTypeByID(rand);
-            fruit.init(type);
+            FruitItem item = fruit.GetComponentInParent<FruitItem>();
+            item.init(type);
             body.isKinematic = false;
         }
 
