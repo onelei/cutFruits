@@ -126,6 +126,7 @@ namespace cutFruits
         {
             fruit.transform.localPosition = new Vector3(0f,GameData.mMaxBottomY);
             Rigidbody body = fruit.GetComponent<Rigidbody>();
+            body.velocity = Vector3.zero;
             int randForceX = Random.Range(-5, 5);
             int randForceY = Random.Range(GameData.mMinUpForceY, GameData.mMaxUpForceY);
             body.AddForce(new Vector3(randForceX, randForceY, 0f));//300

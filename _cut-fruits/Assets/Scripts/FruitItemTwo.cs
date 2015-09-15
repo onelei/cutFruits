@@ -79,6 +79,7 @@ namespace cutFruits
           
             leftBody.isKinematic = true;
             rightBody.isKinematic = true;
+            
             // 位置置为0;
             leftBody.transform.localPosition = Vector3.zero;
             rightBody.transform.localPosition = Vector3.zero;
