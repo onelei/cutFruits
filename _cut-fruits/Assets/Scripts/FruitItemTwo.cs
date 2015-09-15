@@ -12,9 +12,9 @@ namespace cutFruits
         Rigidbody leftBody;
         Rigidbody rightBody;
         bool isNeedUp = true;
-        float mTime = 0f;
         float _time = 0f;
         bool startCheck = false;
+        fruitType mType;
         void findUI()
         {
             GameObject go = transform.FindChild("left").gameObject;
@@ -26,6 +26,7 @@ namespace cutFruits
         // 外部初始化;
         public void init(fruitType type)
         {
+            this.mType = type;
             findUI();
             string fruitName = Framework.getNameByType(type);
             Vector2 size = Framework.getSizeByType(type);
@@ -50,6 +51,13 @@ namespace cutFruits
         // 开始分裂;
         public void doAction(bool isNeedUp)
         {
+            // 判断游戏是否结束;
+            if(mType==fruitType.boom)
+            {
+                Time.timeScale = 0f;
+                GameOver.Instance.Over();
+                return;
+            }
             this.isNeedUp = isNeedUp;
             leftBody.isKinematic = false;
             rightBody.isKinematic = false;

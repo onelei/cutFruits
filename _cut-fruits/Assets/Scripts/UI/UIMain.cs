@@ -11,18 +11,7 @@ namespace cutFruits
 {
     public class UIMain:MonoBehaviour
     {
-        private static UIMain _instance = null;
-        public static UIMain Instance
-        {
-            get
-            {
-                if(_instance==null)
-                {
-                    _instance = new UIMain();
-                }
-                return _instance;
-            }
-        }
+        public static UIMain Instance;
 
         private readonly string mGo_DC_Path = "BLAnchor/parent/dojo";
         private readonly string mGo_Game_Path = "BAnchor/parent";
@@ -31,8 +20,8 @@ namespace cutFruits
         private readonly string mGo_Head3_Path = "TLAnchor/parent3";
 
         // 道场;
-        private GameObject mGO_DC_parent;
-        private GameObject mGO_DC;
+        private GameObject mGo_DC_parent;
+        private GameObject mGo_DC;
         // 新游戏;
         private GameObject mGo_Game_parent;
         private GameObject mGo_Game;
@@ -45,19 +34,17 @@ namespace cutFruits
         private GameObject mGo_Head_Word2;
         private GameObject mGo_Head3;
 
-        private float _mTime = 0f;
-        private float mTime = 1f;
-        private bool _Start = false;
-
         private List<GameObject> mGo_Rings;
+
         public UIMain()
         {
+            Instance = this;
             mGo_Rings = new List<GameObject>();
         }
 
         void Awake()
         {
-            mGO_DC_parent = gameObject.transform.FindChild(mGo_DC_Path).gameObject;
+            mGo_DC_parent = gameObject.transform.FindChild(mGo_DC_Path).gameObject;
             mGo_Game_parent = gameObject.transform.FindChild(mGo_Game_Path).gameObject;
             mGo_Quit_parent = gameObject.transform.FindChild(mGo_Quit_Path).gameObject;
             mGo_Head = gameObject.transform.FindChild(mGo_Head_Path).gameObject;
@@ -72,6 +59,18 @@ namespace cutFruits
           
         }
 
+        public void Restart()
+        {
+            List<FruitItemOne> mFruitsList = MainModel.Instance.mFruitsOneList;
+            for (int i = 0; i < mFruitsList.Count; ++i)
+            {
+                FruitItem item = mFruitsList[i].GetComponentInParent<FruitItem>();
+                item.gameObject.SetActive(false);
+            }
+            mGo_Rings.Clear();
+            MainModel.Instance.Clear();
+            onEnterUI();
+        }
         // 进入游戏UI界面;
         void onEnterUI()
         {
@@ -79,14 +78,24 @@ namespace cutFruits
             setNewGame();
             setQuit();
             setHead();
+
+            // 显示外环;
+            for (int i = 0; i < mGo_Rings.Count; ++i)
+            {
+                mGo_Rings[i].SetActive(true);
+            }
         }
-
-        // 进入游戏场景;
-        void onEnterScence()
+ 
+        void AddRing(GameObject go)
         {
-            setLeaveUIMove();
-
-            enterGame();
+            for (int i = 0; i < mGo_Rings.Count;++i )
+            {
+                if(mGo_Rings[i]==go)
+                {
+                    return;
+                }
+            }
+            mGo_Rings.Add(go);
         }
 
         void enterGame()
@@ -140,18 +149,19 @@ namespace cutFruits
         void setDC()
         {
             // 道场的外环旋转(顺时针,right);
-            GameObject mGo_DC_ring = mGO_DC_parent.transform.FindChild("ring").gameObject;
+            mGo_DC_parent.transform.localPosition = Vector3.zero;
+            GameObject mGo_DC_ring = mGo_DC_parent.transform.FindChild("ring").gameObject;
             Framework.SetRotate(mGo_DC_ring, 10f, false);
             Framework.SetScale(mGo_DC_ring);
             mGo_Rings.Add(mGo_DC_ring);
 
             // 道场的水果旋转(顺时针,right);
-            Vector3 vec = mGO_DC_parent.transform.FindChild("fruitparent").localPosition;
-            mGO_DC = Framework.CreateFruit(mGO_DC_parent, fruitType.peach, vec);
-            FruitItem fuit = mGO_DC.GetComponentInParent<FruitItem>();
-            Framework.AddOnClick(mGO_DC, "", OnDC);
-            Framework.SetRotate(mGO_DC.transform.parent.gameObject, 5f, false);
-            Framework.SetScale(mGO_DC.transform.parent.gameObject);          
+            Vector3 vec = mGo_DC_parent.transform.FindChild("fruitparent").localPosition;
+            mGo_DC = Framework.CreateUIFruit(mGo_DC_parent, fruitType.peach, vec);
+            FruitItem fuit = mGo_DC.GetComponentInParent<FruitItem>();
+            Framework.AddOnClick(mGo_DC, "", OnDC);
+            Framework.SetRotate(mGo_DC.transform.parent.gameObject, 5f, false);
+            Framework.SetScale(mGo_DC.transform.parent.gameObject);          
         }
 
         // 离开UI界面的移动,也就是进入游戏界面的移动;
@@ -162,26 +172,25 @@ namespace cutFruits
             {
                 mGo_Rings[i].SetActive(false);
             }
-            // 设置道场向下移动;
-            Framework.SetUpDown2(mGO_DC_parent,800f,false);
+     
             // 设置标题向上移动;
-            Framework.SetUpDown2(mGo_Head,800f,true);
+            Framework.SetUpDown2(mGo_Head, 800f, true, GameData.Vec3_mGo_HeadParent);
             // 设置标题3向左边移动;
-            Framework.SetLeftRight2(mGo_Head3,400f,true);
-            // 设置退出向下移动;
-            Framework.SetUpDown2(mGo_Quit_parent,800f,false);
+            Framework.SetLeftRight2(mGo_Head3,400f,true,GameData.Vec3_Head3Parent);
+           
         }
 
         void setNewGame()
         {
             // 游戏的外环顺时针旋转;
+            mGo_Game_parent.transform.localPosition = GameData.Vecs_mGo_GameParent;
             GameObject mGo_Game_ring = mGo_Game_parent.transform.FindChild("ring").gameObject;
             Framework.SetRotate(mGo_Game_ring, 10f, false);
             Framework.SetScale(mGo_Game_ring);
-            mGo_Rings.Add(mGo_Game_ring);
+            AddRing(mGo_Game_ring);
             // 游戏的水果逆时针旋转;
             Vector3 vec = mGo_Game_parent.transform.FindChild("fruitparent").localPosition;
-            mGo_Game = Framework.CreateFruit(mGo_Game_parent, fruitType.sandia, vec);
+            mGo_Game = Framework.CreateUIFruit(mGo_Game_parent, fruitType.sandia, vec);
             FruitItem fuit = mGo_Game.GetComponentInParent<FruitItem>();
             Framework.AddOnClick(mGo_Game, "", OnGame);
             Framework.SetRotate(mGo_Game.transform.parent.gameObject, 5f, true);
@@ -191,13 +200,14 @@ namespace cutFruits
         void setQuit()
         {
             // 游戏的外环顺时针旋转;
+            mGo_Quit_parent.transform.localPosition = Vector3.zero;
             GameObject go = mGo_Quit_parent.transform.FindChild("fruitparent/ring").gameObject;
             Framework.SetRotate(go, 10f, true);
             Framework.SetScale(go);
-            mGo_Rings.Add(go);
+            AddRing(go);
             // 游戏的水果逆时针旋转;
             Vector3 vec = mGo_Quit_parent.transform.FindChild("fruitparent").localPosition;
-            mGo_Quit = Framework.CreateFruit(mGo_Quit_parent, fruitType.boom, vec);
+            mGo_Quit = Framework.CreateUIFruit(mGo_Quit_parent, fruitType.boom, vec);
             FruitItem fuit = mGo_Quit.GetComponentInParent<FruitItem>();
             Framework.AddOnClick(mGo_Quit, "", OnQuit);
 
@@ -206,13 +216,13 @@ namespace cutFruits
         void setHead()
         {
             // 设置背景;
+            mGo_Head.transform.localPosition = GameData.Vec3_mGo_HeadParent;
             GameObject go = mGo_Head.transform.FindChild("bg").gameObject;
-            Framework.SetUpDown(go,200f,false);
+            Framework.SetUpDown(go,200f,false,GameData.Vec3_HeadBackGround);
             // 设置弹跳的动画;
-            _Start = true;
             mGo_Head_Word2 = mGo_Head.transform.FindChild("word2").gameObject;
             StartCoroutine(setHeadWord2());
-            Framework.SetLeftRight(mGo_Head3, 800f, 2.5f, true);
+            Framework.SetLeftRight(mGo_Head3, 800f, 2.5f, true, GameData.Vec3_Head3Parent);
         }
 
         IEnumerator setHeadWord2()
@@ -226,18 +236,56 @@ namespace cutFruits
         {
             // 点击道场的回调;
             
+            // 划水果;
+
+            FruitItem fuit = mGo_DC.GetComponentInParent<FruitItem>();
+            fuit.doAction(false);
+
+            // 设置退出向下移动;
+            Framework.SetUpDown2(mGo_Quit_parent, 800f, false,Vector3.zero);
+            // 设置Game向下移动;
+            Framework.SetUpDown2(mGo_Game_parent, 800f, false, GameData.Vecs_mGo_GameParent);
+
+            // 离开当前页面;
+            setLeaveUIMove();
+
+            // 进入UI界面;
+            StartCoroutine(StartInterUI());
+
+        }
+
+        IEnumerator StartInterUI()
+        {
+            yield return new WaitForSeconds(2f);
+            onEnterUI();
         }
 
         void OnGame(object obj)
         {
+            FruitItem fuit = mGo_Game.GetComponentInParent<FruitItem>();
+            fuit.doAction(false);
+
+            // 设置退出向下移动;
+            Framework.SetUpDown2(mGo_Quit_parent, 800f, false,Vector3.zero);
+            // 设置Game向下移动;
+            Framework.SetUpDown2(mGo_DC_parent, 800f, false,Vector3.zero);
+
             // 点击game的回调;
-            onEnterScence();
+            setLeaveUIMove();
+
+            enterGame();
         }
 
         void OnQuit(object obj)
         {
+            // 设置退出向下移动;
+            Framework.SetUpDown2(mGo_Quit_parent, 800f, false,Vector3.zero);
+            // 设置Game向下移动;
+            Framework.SetUpDown2(mGo_Game_parent, 800f, false,GameData.Vecs_mGo_GameParent);
+            // 设置DC向下移动;
+            Framework.SetUpDown2(mGo_DC_parent, 800f, false,Vector3.zero);
             // 点击quit的回调;
-
+            Application.Quit();
         }
 
         void OnDestroy()
@@ -260,18 +308,14 @@ namespace cutFruits
             }
 
             // 检测道场;
-            if (gesture.IsInRect(NGUIObjectToRect(mGO_DC)))
+            if (gesture.IsInRect(NGUIObjectToRect(mGo_DC)))
             {
-                FruitItem fuit = mGO_DC.GetComponentInParent<FruitItem>();
-                fuit.doAction(false);
                 OnDC(null);
             }
 
             // 检测游戏;
             if (gesture.IsInRect(NGUIObjectToRect(mGo_Game)))
             {
-                FruitItem fuit = mGo_Game.GetComponentInParent<FruitItem>();
-                fuit.doAction(false);
                 OnGame(null);
             }
 

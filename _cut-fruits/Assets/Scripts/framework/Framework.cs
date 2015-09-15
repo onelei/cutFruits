@@ -68,10 +68,10 @@ namespace cutFruits
             ts.duration = 1f;
         }
 
-        public static void SetUpDown(GameObject go,float dis,bool isUp)
+        public static void SetUpDown(GameObject go,float dis,bool isUp,Vector3 pos)
         {
             TweenPosition tp = go.AddComponent<TweenPosition>();
-            Vector3 vec = go.transform.localPosition;
+            Vector3 vec = pos;
             if (isUp)
             {
                 tp.from = new Vector3(vec.x, vec.y - dis, vec.z);
@@ -84,10 +84,10 @@ namespace cutFruits
             tp.style = UITweener.Style.Once;
             tp.duration = 1f;
         }
-        public static void SetUpDown2(GameObject go, float dis, bool isUp)
+        public static void SetUpDown2(GameObject go, float dis, bool isUp,Vector3 pos)
         {
             TweenPosition tp = AddOneComponent<TweenPosition>(go);
-            Vector3 vec = go.transform.localPosition;
+            Vector3 vec = pos;
             if (isUp)
             {
                 tp.to = new Vector3(vec.x, vec.y + dis, vec.z);
@@ -101,10 +101,10 @@ namespace cutFruits
             tp.duration = 1f;
         }
 
-        public static void SetLeftRight(GameObject go, float dis, float time,bool isLeft)
+        public static void SetLeftRight(GameObject go, float dis, float time,bool isLeft,Vector3 pos)
         {
             TweenPosition tp = go.AddComponent<TweenPosition>();
-            Vector3 vec = go.transform.localPosition;
+            Vector3 vec = pos;
             // 从左到右;
             if (isLeft)
             {
@@ -118,10 +118,11 @@ namespace cutFruits
             tp.style = UITweener.Style.Once;
             tp.duration = time;
         }
-        public static void SetLeftRight2(GameObject go, float dis,bool isLeft)
+
+        public static void SetLeftRight2(GameObject go, float dis,bool isLeft,Vector3 pos)
         {      
             TweenPosition tp = go.AddComponent<TweenPosition>();
-            Vector3 vec = go.transform.localPosition;
+            Vector3 vec = pos;
             // 向左边移动;
             if (isLeft)
             {
@@ -135,7 +136,9 @@ namespace cutFruits
             tp.style = UITweener.Style.Once;
             tp.duration = 1f;
         }
-        public static GameObject CreateFruit(GameObject parent,fruitType type ,Vector3 vec)
+
+        // 创建UI界面的水果;
+        public static GameObject CreateUIFruit(GameObject parent,fruitType type ,Vector3 vec)
         {
             GameObject obj = Instantiate(Resources.Load(UIPrafabs.oneFruit)) as GameObject;       
             obj.transform.parent = parent.transform;

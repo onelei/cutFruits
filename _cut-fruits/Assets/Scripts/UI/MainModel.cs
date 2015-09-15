@@ -20,6 +20,10 @@ namespace cutFruits
 
         public List<FruitItemOne> mFruitsOneList;
 
+        public void Clear()
+        {
+            mFruitsOneList.Clear();
+        }
         public MainModel()
         {
             mFruitsOneList = new List<FruitItemOne>();

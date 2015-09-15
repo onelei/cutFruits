@@ -3,13 +3,17 @@
 namespace cutFruits
 {
     public class MyUIRoot : MonoBehaviour
-    { // 滚动的道场;
+    { 
+        // 滚动的道场;
         GameObject mGo_UIMain;
         GameObject mGo_Parent;
+        // 游戏结束界面;
+        GameObject mGo_Over;
         void Awake()
         {
             mGo_Parent = GameObject.Find("UI Root").gameObject;
             mGo_UIMain = gameObject.transform.Find("UIMain").gameObject;
+            mGo_Over = gameObject.transform.Find("UIOver").gameObject;
         }
 
         void Start()
@@ -17,6 +21,8 @@ namespace cutFruits
             // 加载主界面;
             mGo_UIMain.AddComponent<UIMain>();
           
+            // 设置GameOver界面;
+            mGo_Over.AddComponent<GameOver>();
         }
 
       
