@@ -353,6 +353,7 @@ namespace cutFruits
  
         void Update()
         {
+            // 检测水果的弹跳,如果水果移出视野,那么就重新弹上来;
             List<FruitItemOne> mFruitsList = MainModel.Instance.mFruitsOneList;
             for (int i = 0; i < mFruitsList.Count;++i)
             {
