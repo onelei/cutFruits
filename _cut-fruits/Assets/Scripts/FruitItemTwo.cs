@@ -94,11 +94,8 @@ namespace cutFruits
             leftBody.transform.localPosition = Vector3.zero;
             rightBody.transform.localPosition = Vector3.zero;
             // 划过水果之后,要将水果重新向上抛;
-            if (isNeedUp)
-            {
                 FruitItem item = gameObject.GetComponentInParent<FruitItem>();
-                item.reSet();
-            }
+                item.reSet(isNeedUp);
             gameObject.SetActive(false);
         }
        

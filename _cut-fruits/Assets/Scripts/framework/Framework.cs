@@ -117,7 +117,7 @@ namespace cutFruits
             }
             else
             {
-                tp.from = new Vector3(vec.x+dis, vec.y + dis, vec.z);
+                tp.from = new Vector3(vec.x+dis, vec.y, vec.z);
             }
             tp.to = vec;
             tp.style = UITweener.Style.Once;
@@ -136,7 +136,7 @@ namespace cutFruits
             }
             else
             {
-                tp.to = new Vector3(vec.x + dis, vec.y + dis, vec.z);
+                tp.to = new Vector3(vec.x + dis, vec.y, vec.z);
             }
             tp.from = vec;
             tp.style = UITweener.Style.Once;
