@@ -57,6 +57,7 @@ namespace cutFruits
             }
             tr.style = UITweener.Style.Loop;
             tr.duration = time;
+            tr.enabled = true;
         }
 
         public static void SetScale(GameObject go)
@@ -66,6 +67,7 @@ namespace cutFruits
             ts.to = Vector3.one;
             ts.style = UITweener.Style.Once;
             ts.duration = 1f;
+            ts.enabled = true;
         }
 
         public static void SetUpDown(GameObject go,float dis,bool isUp,Vector3 pos)
@@ -83,6 +85,7 @@ namespace cutFruits
             tp.to = vec;
             tp.style = UITweener.Style.Once;
             tp.duration = 1f;
+            tp.enabled = true;
         }
         public static void SetUpDown2(GameObject go, float dis, bool isUp,Vector3 pos)
         {
@@ -99,6 +102,8 @@ namespace cutFruits
             tp.from = vec;
             tp.style = UITweener.Style.Once;
             tp.duration = 1f;
+            tp.enabled = true;
+            tp.enabled = true;
         }
 
         public static void SetLeftRight(GameObject go, float dis, float time,bool isLeft,Vector3 pos)
@@ -117,6 +122,7 @@ namespace cutFruits
             tp.to = vec;
             tp.style = UITweener.Style.Once;
             tp.duration = time;
+            tp.enabled = true;
         }
 
         public static void SetLeftRight2(GameObject go, float dis,bool isLeft,Vector3 pos)
@@ -135,6 +141,7 @@ namespace cutFruits
             tp.from = vec;
             tp.style = UITweener.Style.Once;
             tp.duration = 1f;
+            tp.enabled = true;
         }
 
         // 创建UI界面的水果;
@@ -212,35 +219,54 @@ namespace cutFruits
                 case fruitType.apple:
                     {
                         vec = new Vector2(66f,66f);
+                        //vec = new Vector2(132f, 132f);
                     }
                     break;
                 case fruitType.banana:
                     {
                         vec = new Vector2(126f, 50f);
+                       // vec = new Vector2(252, 100f);
                     }
                     break;
                 case fruitType.basaha:
                     {
                         vec = new Vector2(68f, 72f);
+                      //  vec = new Vector2(136f, 144f);
                     }
                     break;
                 case fruitType.boom:
                     {
                         vec = new Vector2(66f, 68f);
+                      //  vec = new Vector2(132f, 136f);
+
                     }
                     break;
                 case fruitType.peach:
                     {
                         vec = new Vector2(62f, 59f);
+                       // vec = new Vector2(124f, 118f);
+
                     }
                     break;
                 case fruitType.sandia:
                     {
                         vec = new Vector2(98f, 85f);
+                       // vec = new Vector2(196f, 170f);
+
                     }
                     break;
             }
             return vec;
+        }
+
+        public static void Pause()
+        {
+            Time.timeScale = 0f;
+        }
+
+        public static void Resume()
+        {
+            Time.timeScale = 1f;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace cutFruits
             // 判断游戏是否结束;
             if(mType==fruitType.boom)
             {
-                Time.timeScale = 0f;
+                Framework.Pause();
                 GameOver.Instance.Over();
                 return;
             }

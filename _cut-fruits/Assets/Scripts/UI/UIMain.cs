@@ -49,6 +49,9 @@ namespace cutFruits
             mGo_Quit_parent = gameObject.transform.FindChild(mGo_Quit_Path).gameObject;
             mGo_Head = gameObject.transform.FindChild(mGo_Head_Path).gameObject;
             mGo_Head3 = gameObject.transform.FindChild(mGo_Head3_Path).gameObject;
+
+            // 设置初始的位置;
+
         }
 
         void Start()
@@ -71,6 +74,7 @@ namespace cutFruits
             MainModel.Instance.Clear();
             onEnterUI();
         }
+
         // 进入游戏UI界面;
         void onEnterUI()
         {

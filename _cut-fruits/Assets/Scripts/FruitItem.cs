@@ -17,8 +17,6 @@ namespace cutFruits
         FruitItemTwo itemTwo;
         FruitItemOne itemOne;
 
-        bool isNeedUp = false;
-
         void findUI()
         {
             mGo_One = transform.FindChild(mGo_One_Path).gameObject;
